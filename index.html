@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Concession Calculator</title>
+    <style>
+      :root {
+        font-family: Inter, system-ui, Arial;
+        color: #15243b;
+        background: #f3f6fb;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 22px;
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: auto;
+      }
+      header {
+        background: linear-gradient(115deg, #142e58, #2666ad);
+        color: white;
+        border-radius: 20px;
+        padding: 28px;
+        margin-bottom: 22px;
+      }
+      h1 {
+        margin: 0 0 7px;
+        font-size: clamp(24px, 4vw, 36px);
+      }
+      header p {
+        margin: 0;
+        color: #d8e8ff;
+      }
+      .panel {
+        background: white;
+        border: 1px solid #e0e8f3;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 6px 20px #19345c0b;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      label {
+        display: block;
+        font-weight: 650;
+        margin-bottom: 8px;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 13px;
+        border: 1px solid #bacbe1;
+        border-radius: 10px;
+        font: inherit;
+        background: white;
+        color: #15243b;
+      }
+      input:focus,
+      select:focus {
+        outline: 2px solid #3c86db;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 26px 0 12px;
+      }
+      .results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+        gap: 15px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e0e8f3;
+        border-radius: 15px;
+        padding: 20px;
+      }
+      .card h3 {
+        margin: 0 0 15px;
+        color: #174f94;
+      }
+      .line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 0;
+        border-bottom: 1px solid #edf1f7;
+      }
+      .line span {
+        color: #53647b;
+      }
+      .line strong {
+        text-align: right;
+      }
+      .line.highlight {
+        background: #edf6ff;
+        border-radius: 9px;
+        margin-top: 10px;
+        padding: 12px;
+      }
+      .line.highlight strong {
+        color: #135aa3;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      button {
+        border: 0;
+        background: #195caa;
+        color: white;
+        border-radius: 10px;
+        padding: 12px 18px;
+        font: inherit;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #e8f0fa;
+        color: #174f94;
+      }
+      .note {
+        font-size: 13px;
+        color: #60718a;
+        margin-top: 16px;
+        line-height: 1.5;
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 12px;
+        }
+        .panel {
+          padding: 16px;
+        }
+        .controls {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media print {
+        body {
+          background: white;
+        }
+        header {
+          color: #15243b;
+          background: white;
+          border: 1px solid #ddd;
+        }
+        .actions {
+          display: none;
+        }
+      }
+    </style>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      html,
+      body {
+        min-height: 100%;
+      }
+      body {
+        padding: 10px;
+        background: #edf2f8;
+      }
+      .wrap {
+        max-width: 1180px;
+      }
+      header {
+        padding: 13px 20px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+      }
+      h1 {
+        font-size: 23px;
+        margin: 0 0 2px;
+      }
+      header p {
+        font-size: 12px;
+      }
+      .panel {
+        padding: 14px 18px;
+        border-radius: 12px;
+      }
+      .controls {
+        gap: 12px;
+        grid-template-columns: 1.25fr 1fr;
+      }
+      .controls label {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      select,
+      input {
+        padding: 9px 10px;
+        font-size: 14px;
+        border-radius: 7px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 13px 0 8px;
+      }
+      .results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .card {
+        padding: 11px 13px;
+        border-radius: 10px;
+      }
+      .card h3 {
+        font-size: 15px;
+        margin: 0 0 5px;
+      }
+      .line {
+        padding: 7px 0;
+        font-size: 13px;
+      }
+      .line.highlight {
+        padding: 8px;
+        margin-top: 5px;
+      }
+      .actions {
+        margin-top: 10px;
+        gap: 8px;
+      }
+      button {
+        padding: 8px 12px;
+        font-size: 12px;
+        border-radius: 7px;
+      }
+      .note {
+        font-size: 10px;
+        margin-top: 8px;
+        line-height: 1.3;
+      }
+      @media (min-width: 701px) and (max-height: 650px) {
+        body {
+          padding: 6px;
+        }
+        header {
+          padding: 8px 14px;
+          margin-bottom: 6px;
+        }
+        h1 {
+          font-size: 19px;
+        }
+        .panel {
+          padding: 9px 13px;
+        }
+        h2 {
+          margin: 8px 0 6px;
+        }
+        .line {
+          padding: 5px 0;
+        }
+        .card {
+          padding: 8px 11px;
+        }
+        .actions {
+          margin-top: 7px;
+        }
+        .note {
+          margin-top: 5px;
+        }
+      }
+      @media (max-width: 700px) {
+        body {
+          padding: 7px;
+        }
+        .wrap {
+          width: 100%;
+        }
+        header {
+          padding: 10px 12px;
+          margin-bottom: 7px;
+        }
+        h1 {
+          font-size: 18px;
+        }
+        header p {
+          font-size: 10px;
+        }
+        .panel {
+          padding: 10px;
+        }
+        .controls {
+          grid-template-columns: 1fr 1fr;
+          gap: 7px;
+        }
+        .controls label {
+          font-size: 11px;
+        }
+        select,
+        input {
+          min-width: 0;
+          width: 100%;
+          font-size: 12px;
+          padding: 8px 5px;
+        }
+        h2 {
+          font-size: 13px;
+          margin: 10px 0 7px;
+        }
+        .results {
+          grid-template-columns: 1fr;
+          gap: 7px;
+        }
+        .results.two-up {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 7px;
+        }
+        .results.two-up .card {
+          min-width: 0;
+          padding: 7px;
+        }
+        .results.two-up .line {
+          gap: 4px;
+          font-size: 10px;
+          flex-wrap: wrap;
+        }
+        .results.two-up .line strong {
+          font-size: 10px;
+        }
+        .results.two-up .card h3 {
+          font-size: 12px;
+        }
+        .card {
+          padding: 9px;
+        }
+        .card h3 {
+          font-size: 13px;
+          margin-bottom: 3px;
+        }
+        .line {
+          padding: 5px 0;
+          font-size: 12px;
+        }
+        .line.highlight {
+          padding: 7px;
+        }
+        .actions {
+          margin-top: 8px;
+        }
+        .note {
+          font-size: 9px;
+          margin-top: 7px;
+        }
+      }
+      @media (max-width: 700px) and (max-height: 760px) {
+        header p {
+          display: none;
+        }
+        .note {
+          display: none;
+        }
+        .card {
+          padding: 7px;
+        }
+        .line {
+          padding: 4px 0;
+        }
+        h2 {
+          margin: 7px 0 5px;
+        }
+      }
+      @media print {
+        body {
+          padding: 10px;
+        }
+        .note {
+          display: block;
+        }
+      }
+      @media (min-width: 701px) {
+        .wrap {
+          max-width: 760px;
+          width: 100%;
+        }
+      }
+      @media (max-width: 700px) {
+        .wrap {
+          max-width: 460px;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <h1>Sri Chaitanya Institute</h1>
+        <p>Concession Calculator All Classes</p>
+      </header>
+      <section class="panel">
+        <div class="controls">
+          <div>
+            <label for="course">Course / Class</label
+            ><select id="course">
+              <option value="11">11th</option>
+              <option value="f67">Foundation (6th & 7th)</option>
+              <option value="f8">Foundation (8th)</option>
+              <option value="f9">Foundation (9th)</option>
+              <option value="f10">Foundation (10th)</option>
+              <option value="jee">OYP – 12th & Dropper JEE</option>
+              <option value="neet">OYP – 12th & Dropper NEET</option>
+            </select>
+          </div>
+          <div>
+            <label for="fee">Overall Fee (₹)</label
+            ><input
+              id="fee"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+              placeholder="Enter Overall Fee"
+              inputmode="decimal"
+            />
+          </div>
+        </div>
+        <h2>Calculated Fee Breakdown</h2>
+        <div class="results" id="results" aria-live="polite"></div>
+        <div class="actions">
+          <button onclick="window.print()">Print / Save PDF</button
+          ><button class="secondary" id="reset">Reset to Excel Default</button>
+        </div>
+      </section>
+    </main>
+    <script>
+      const data = {
+        11: {
+          fee: 0,
+          parts: [
+            { name: "1st Year", total: 191100, kind: "first" },
+            { name: "2nd Year", total: 127400, kind: "second" },
+          ],
+        },
+        f67: {
+          fee: 0,
+          parts: [
+            {
+              name: "Foundation (6th & 7th)",
+              total: 48500,
+              kind: "foundation",
+            },
+          ],
+        },
+        f8: {
+          fee: 0,
+          parts: [
+            { name: "Foundation (8th)", total: 49500, kind: "foundation" },
+          ],
+        },
+        f9: {
+          fee: 0,
+          parts: [
+            { name: "Foundation (9th)", total: 68500, kind: "foundation" },
+          ],
+        },
+        f10: {
+          fee: 0,
+          parts: [
+            { name: "Foundation (10th)", total: 72500, kind: "foundation" },
+          ],
+        },
+        jee: {
+          fee: 0,
+          parts: [{ name: "12th & Dropper JEE", total: 163000, kind: "oyp" }],
+        },
+        neet: {
+          fee: 0,
+          parts: [{ name: "12th & Dropper NEET", total: 155500, kind: "oyp" }],
+        },
+      };
+      const course = document.getElementById("course"),
+        fee = document.getElementById("fee"),
+        results = document.getElementById("results");
+      const money = (n) =>
+        Number.isFinite(n)
+          ? new Intl.NumberFormat("en-IN", {
+              style: "currency",
+              currency: "INR",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            }).format(Math.floor(n + 0.5))
+          : "—";
+      const round = (n) => Math.floor(n + 0.5);
+      function line(k, v, hi = false) {
+        return `<div class="line ${hi ? "highlight" : ""}"><span>${k}</span><strong>${money(v)}</strong></div>`;
+      }
+      function render() {
+        results.classList.toggle("two-up", course.value === "11");
+        const v = Number(fee.value),
+          valid = fee.value.trim() !== "" && Number.isFinite(v) && v >= 0;
+        if (!valid) {
+          results.innerHTML =
+            '<p style="margin:4px 0;color:#60718a;font-size:13px">Enter Overall Fee to see calculations.</p>';
+          return;
+        }
+        results.innerHTML = data[course.value].parts
+          .map((p) => {
+            let gross, net, offer;
+            if (p.kind === "first") {
+              gross = v * 0.6;
+              offer = round(
+                p.total - ((gross - 10000 - 5250) / 1.18 + 10000 + 5000),
+              );
+              net = p.total - offer;
+            } else if (p.kind === "second") {
+              gross = v * 0.4;
+              net = round(gross / 1.18);
+              offer = p.total - net;
+            } else if (p.kind === "foundation") {
+              gross = v;
+              offer = round(
+                p.total - ((gross - 2500 - 2625) / 1.18 + 2500 + 2500),
+              );
+              net = p.total - offer;
+            } else {
+              gross = v;
+              offer = round(
+                p.total - ((gross - 5000 - 2625) / 1.18 + 5000 + 2500),
+              );
+              net = p.total - offer;
+            }
+            return `<article class="card"><h3>${p.name}</h3>${line("Total Fee", p.total)}${line("Concession Offer", offer)}${line("Net Fee Without GST", net)}${line("Net Fee With GST", gross, true)}</article>`;
+          })
+          .join("");
+      }
+      course.addEventListener("change", () => {
+        render();
+      });
+      fee.addEventListener("input", render);
+      document.getElementById("reset").addEventListener("click", () => {
+        fee.value = data[course.value].fee;
+        render();
+      });
+      render();
+    </script>
+  </body>
+</html>
